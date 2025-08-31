@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>跨性别家暴风险： 社会支持程度轴评估</title>
+  <title>二维量表测试 Demo</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; line-height: 1.6; }
@@ -19,9 +19,8 @@
 <body>
 
   <!-- ====== 标题 & 填写说明 ====== -->
-  <h1>跨性别家暴风险： 社会支持程度轴评估</h1>
-  <h3>用于评估跨性别者面临家庭暴力风险因素中，父母社会支持程度的分数。分数越高，社会支持程度越差，家庭暴力风险也相应越高。</h3>
-  <h3>请根据主要监护、抚养者或家庭中主要决策者的情况填写，如无法区分主次，可笼统根据对监护、抚养、决策者整体的印象填写。</h3>
+  <h1>二维性格量表测试</h1>
+  <h3>请根据自己的真实想法选择最符合的选项。完成后，系统会根据你的选择在坐标图中展示结果。</h3>
 
   <form id="quizForm"></form>
   <button type="button" onclick="calculate()">提交</button>
@@ -35,33 +34,25 @@
     // 1. 配置问卷题目
     // =======================
     const questions = [
-      { text: "关注反同、反跨信息", tag: "x", options: [
-        { text: "从不", value: 0 },
-        { text: "很少", value: 1 },
-        { text: "偶尔", value: 2 },
-        { text: "经常", value: 3 },
-        { text: "总是", value: 4 }
+      { text: "你喜欢和陌生人交谈吗？", tag: "x", options: [
+        { text: "非常同意", value: 5 },
+        { text: "一般", value: 3 },
+        { text: "完全不同意", value: 1 }
       ]},
-      { text: "明确表达过对家庭暴力或扭转治疗的支持", tag: "x", options: [
-        { text: "从不", value: 0 },
-        { text: "很少", value: 1 },
-        { text: "偶尔", value: 2 },
-        { text: "经常", value: 3 },
-        { text: "总是", value: 4 }
+      { text: "你更喜欢团队活动还是独自一人？", tag: "x", options: [
+        { text: "团队活动", value: 5 },
+        { text: "看情况", value: 3 },
+        { text: "独自一人", value: 1 }
       ]},
-      { text: "沉迷短视频平台、微信朋友圈", tag: "y", options: [
-        { text: "从不", value: 0 },
-        { text: "很少", value: 1 },
-        { text: "偶尔", value: 2 },
-        { text: "经常", value: 3 },
-        { text: "总是", value: 4 }
+      { text: "你遇到问题时会如何应对？", tag: "y", options: [
+        { text: "向别人求助", value: 5 },
+        { text: "自己尝试解决", value: 3 },
+        { text: "拖延或回避", value: 1 }
       ]},
-      { text: "受他人诈骗或盲目笃信他人", tag: "y", options: [
-        { text: "从不", value: 0 },
-        { text: "很少", value: 1 },
-        { text: "偶尔", value: 2 },
-        { text: "经常", value: 3 },
-        { text: "总是", value: 4 }
+      { text: "你做决策时更依赖理性还是情感？", tag: "y", options: [
+        { text: "完全理性", value: 5 },
+        { text: "平衡", value: 3 },
+        { text: "依赖情感", value: 1 }
       ]}
     ];
 
@@ -82,7 +73,7 @@
 
     let chart; 
     let bgImage = new Image();
-    bgImage.src = "https://raw.githubusercontent.com/wty36740-commits/Transdomviotest/main/chart.png"; // 替换为你的图片
+    bgImage.src = "https://raw.githubusercontent.com/yourname/yourrepo/main/background.png"; // 替换为你的图片
     let bgOpacity = 0.3; // 背景透明度（0~1，可自行修改）
 
     // 插件：绘制背景图
