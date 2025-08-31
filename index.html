@@ -93,4 +93,79 @@
           const ctx = chart.ctx;
           const {top, left, width, height} = chart.chartArea;
           ctx.save();
-          ctx.gl
+          ctx.globalAlpha = bgOpacity; // 设置透明度
+          ctx.drawImage(bgImage, left, top, width, height);
+          ctx.restore();
+        }
+      }
+    };
+
+    // =======================
+    // 2. 初始化空图表
+    // =======================
+    function initChart() {
+      const ctx = document.getElementById('resultChart').getContext('2d');
+      chart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: '你的结果',
+            data: [{x: 0, y: 0}], // 默认坐标
+            pointBackgroundColor: 'red',
+            pointRadius: 8
+          }]
+        },
+        options: {
+          scales: {
+            x: { title: { display: true, text: 'X维度' }, min: 0, max: 100 },
+            y: { title: { display: true, text: 'Y维度' }, min: 0, max: 100 }
+          }
+        },
+        plugins: [backgroundPlugin]
+      });
+    }
+
+    // =======================
+    // 3. 计算并更新结果
+    // =======================
+    function calculate() {
+      let scoreX = 0, scoreY = 0;
+      let maxX = 0, maxY = 0;
+      let unanswered = false;
+
+      questions.forEach((q, i) => {
+        let selected = document.querySelector(`input[name="q${i}"]:checked`);
+        let maxOpt = Math.max(...q.options.map(o => o.value));
+        if (q.tag === "x") maxX += maxOpt;
+        if (q.tag === "y") maxY += maxOpt;
+        if (selected) {
+          let value = parseInt(selected.value);
+          if (selected.dataset.tag === "x") scoreX += value;
+          if (selected.dataset.tag === "y") scoreY += value;
+        } else {
+          unanswered = true;
+        }
+      });
+
+      if (unanswered) {
+        document.getElementById("result").innerText = "⚠️ 请回答所有问题再提交！";
+        document.getElementById("explanation").innerHTML = "";
+        return;
+      }
+
+      let percentX = Math.round(scoreX / maxX * 100);
+      let percentY = Math.round(scoreY / maxY * 100);
+
+      document.getElementById("result").innerText = 
+        `结果坐标：(X=${percentX}, Y=${percentY}) （已转换为百分制）`;
+
+      chart.data.datasets[0].data = [{x: percentX, y: percentY}];
+      chart.update();
+    }
+
+    // 初始化时就绘制空图
+    window.onload = initChart;
+  </script>
+
+</body>
+</html>
