@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>二维量表测试 Demo</title>
+  <title>跨性别家暴风险评估（测试）</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; line-height: 1.6; }
@@ -19,8 +19,9 @@
 <body>
 
   <!-- ====== 标题 & 填写说明 ====== -->
-  <h1>二维性格量表测试</h1>
-  <h3>请根据自己的真实想法选择最符合的选项。完成后，系统会根据你的选择在坐标图中展示结果。</h3>
+  <h1>跨性别家暴风险评估（测试）</h1>
+  <h3>用于评估跨性别者面临家庭暴力风险因素中，父母社会支持程度的分数。分数越高，社会支持程度越差，家庭暴力风险也相应越高。</h3> 
+  <h3>请根据主要监护、抚养者或家庭中主要决策者的情况填写，如无法区分主次，可笼统根据对监护、抚养、决策者整体的印象填写</h3>
 
   <form id="quizForm"></form>
   <button type="button" onclick="calculate()">提交</button>
@@ -34,25 +35,208 @@
     // 1. 配置问卷题目
     // =======================
     const questions = [
-      { text: "你喜欢和陌生人交谈吗？", tag: "x", options: [
-        { text: "非常同意", value: 5 },
-        { text: "一般", value: 3 },
-        { text: "完全不同意", value: 1 }
+      { text: "关注反同、反跨信息", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 4 },
+        { text: "有时", value: 8 },
+        { text: "经常", value: 12 },
+        { text: "总是", value: 16 }
       ]},
-      { text: "你更喜欢团队活动还是独自一人？", tag: "x", options: [
-        { text: "团队活动", value: 5 },
-        { text: "看情况", value: 3 },
-        { text: "独自一人", value: 1 }
+      { text: "明确表达对家庭暴力或扭转治疗的支持", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 4 },
+        { text: "有时", value: 8 },
+        { text: "经常", value: 12 },
+        { text: "总是", value: 16 }
       ]},
-      { text: "你遇到问题时会如何应对？", tag: "y", options: [
-        { text: "向别人求助", value: 5 },
-        { text: "自己尝试解决", value: 3 },
-        { text: "拖延或回避", value: 1 }
+      { text: "沉迷短视频平台、微信朋友圈", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
       ]},
-      { text: "你做决策时更依赖理性还是情感？", tag: "y", options: [
-        { text: "完全理性", value: 5 },
-        { text: "平衡", value: 3 },
-        { text: "依赖情感", value: 1 }
+      { text: "受他人诈骗或盲目笃信他人", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "受他人影响而快速作出或改变生活方式、消费、出行等重大决策", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "因为过度自信而陷入不利状况", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "对同一官方信息来源的信息作出选择性的强烈坚信或否定态度，甚至自我矛盾", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "除家族成员外其他较为亲近的社会关系", tag: "y", options: [
+        { text: "很多", value: 0 },
+        { text: "较多", value: 1 },
+        { text: "一些", value: 2 },
+        { text: "很少", value: 3 },
+        { text: "完全没有", value: 4 }
+      ]},
+      { text: "与你知道品行不佳或社会评价很差的他人有密切的朋友关系", tag: "y", options: [
+        { text: "完全没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "一些", value: 2 },
+        { text: "较多", value: 3 },
+        { text: "很多", value: 4 }
+      ]},
+      { text: "有不同行业、不同收入水平的朋友关系", tag: "y", options: [
+        { text: "很多", value: 0 },
+        { text: "较多", value: 1 },
+        { text: "一些", value: 2 },
+        { text: "很少", value: 3 },
+        { text: "完全没有", value: 4 }
+      ]},
+      { text: "在朋友关系中处于绝对优势主导、或绝对追随他人的地位", tag: "y", options: [
+        { text: "完全不是", value: 0 },
+        { text: "不准确", value: 1 },
+        { text: "一般", value: 2 },
+        { text: "比较准确", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "在家族中被公认为绝对权威，或习惯服从家族中的绝对权威", tag: "y", options: [
+        { text: "完全不是", value: 0 },
+        { text: "不准确", value: 1 },
+        { text: "一般", value: 2 },
+        { text: "比较准确", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "有强烈的宗教信仰或传统文化偏好", tag: "y", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "曾在警察机关或军队中服役、或对此有强烈认同", tag: "y", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "谈论男子气概、男女有别等话题或作出对女性的贬低评价", tag: "y", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "有至少一种特定社会话题上强烈的偏执和极端观念", tag: "y", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "对国学、中医、算命、武术有强烈痴迷", tag: "y", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "有对家庭、家族成员实施或尝试实施暴力或控制人身的历史", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "似乎没有", value: 4 },
+        { text: "不确定", value: 8 },
+        { text: "似乎有", value: 12 },
+        { text: "确定有", value: 16 }
+      ]},
+      { text: "有对家庭、家族成员口头威胁实施暴力或控制人身的历史", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "似乎没有", value: 2 },
+        { text: "不确定", value: 4 },
+        { text: "似乎有", value: 6 },
+        { text: "确定有", value: 8 }
+      ]},
+      { text: "向其他家庭成员威胁自杀或作出自伤行为", tag: "x", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 2 },
+        { text: "有时", value: 4 },
+        { text: "经常", value: 6 },
+        { text: "总是", value: 8 }
+      ]},
+      { text: "对你进行监视、翻找物品、擅自处置你重要个人物品", tag: "x", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "对你的外出、交友等社交活动进行过强制限制和干涉", tag: "x", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "曾经成功通过上面几种方式迫使你放弃想法或行为", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 2 },
+        { text: "有些", value: 4 },
+        { text: "很多", value: 6 },
+        { text: "完全是", value: 8 }
+      ]},
+      { text: "如果家庭饲养有宠物（非牲畜家禽），曾经对宠物实施过暴力虐待、伤害等行为", tag: "y", options: [
+        { text: "从不", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有时", value: 2 },
+        { text: "经常", value: 3 },
+        { text: "总是", value: 4 }
+      ]},
+      { text: "家庭经济（收入和消费）由其一人掌握", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "是家族的领导者或家族活动的主要倡议者、积极参与者，或与大部分家族成员关系较差", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "在各种家庭事务中将与你相关的事务作为最优先事项", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "时常向家庭成员强调履行家庭义务", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
+      ]},
+      { text: "对你有强烈的生育要求或愿望", tag: "x", options: [
+        { text: "没有", value: 0 },
+        { text: "很少", value: 1 },
+        { text: "有些", value: 2 },
+        { text: "很多", value: 3 },
+        { text: "完全是", value: 4 }
       ]}
     ];
 
@@ -73,7 +257,7 @@
 
     let chart; 
     let bgImage = new Image();
-    bgImage.src = "https://raw.githubusercontent.com/wty36740-commits/Transdomviotest/main/chart.png"; // 替换为你的图片
+    bgImage.src = "https://raw.githubusercontent.com/yourname/yourrepo/main/background.png"; // 替换为你的图片
     let bgOpacity = 0.3; // 背景透明度（0~1，可自行修改）
 
     // 插件：绘制背景图
@@ -108,8 +292,8 @@
         },
         options: {
           scales: {
-            x: { title: { display: true, text: 'X维度' }, min: 0, max: 100 },
-            y: { title: { display: true, text: 'Y维度' }, min: 0, max: 100 }
+            x: { title: { display: true, text: '家庭内部支配强度' }, min: 0, max: 100 },
+            y: { title: { display: true, text: '社会支持匮乏程度' }, min: 0, max: 100 }
           }
         },
         plugins: [backgroundPlugin]
@@ -160,4 +344,3 @@
 
 </body>
 </html>
-
