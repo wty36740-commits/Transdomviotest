@@ -2,7 +2,7 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>跨性别家暴风险： 社会支持程度轴评估 Demo</title>
+  <title>跨性别家暴风险： 社会支持程度轴评估</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: 30px auto; line-height: 1.6; }
@@ -65,9 +65,6 @@
       ]}
     ];
 
-    // =======================
-    // 2. 渲染问卷
-    // =======================
     const form = document.getElementById("quizForm");
     questions.forEach((q, index) => {
       const div = document.createElement("div");
@@ -83,115 +80,17 @@
       form.appendChild(div);
     });
 
-    let chart; // Chart.js 对象
+    let chart; 
+    let bgImage = new Image();
+    bgImage.src = "https://raw.githubusercontent.com/wty36740-commits/Transdomviotest/main/chart.png"; // 替换为你的图片
+    let bgOpacity = 0.3; // 背景透明度（0~1，可自行修改）
 
-    // =======================
-    // 3. 计算并绘制结果
-    // =======================
-    function calculate() {
-      let scoreX = 0, scoreY = 0;
-      let maxX = 0, maxY = 0;
-      let unanswered = false;
-
-      questions.forEach((q, i) => {
-        let selected = document.querySelector(`input[name="q${i}"]:checked`);
-        let maxOpt = Math.max(...q.options.map(o => o.value));
-
-        if (q.tag === "x") maxX += maxOpt;
-        if (q.tag === "y") maxY += maxOpt;
-
-        if (selected) {
-          let value = parseInt(selected.value);
-          if (selected.dataset.tag === "x") scoreX += value;
-          if (selected.dataset.tag === "y") scoreY += value;
-        } else {
-          unanswered = true;
-        }
-      });
-
-      if (unanswered) {
-        document.getElementById("result").innerText = "⚠️ 请回答所有问题再提交！";
-        document.getElementById("explanation").innerHTML = "";
-        return;
-      }
-
-      // 折算为百分制
-      let percentX = Math.round(scoreX / maxX * 100);
-      let percentY = Math.round(scoreY / maxY * 100);
-
-      document.getElementById("result").innerText = 
-        `结果坐标：(X=${percentX}, Y=${percentY}) （已转换为百分制）`;
-
-      // === 显示象限解释 ===
-      let explanation = "";
-      if (percentX >= 50 && percentY >= 50) {
-        explanation = {
-          title: "高风险",
-          detail: "有很高的家暴风险"
-        };
-      } else if (percentX < 50 && percentY >= 50) {
-        explanation = {
-          title: "一般风险",
-          detail: "无"
-        };
-      } else if (percentX >= 50 && percentY < 50) {
-        explanation = {
-          title: "一般风险",
-          detail: "无"
-        };
-      } else {
-        explanation = {
-          title: "低风险",
-          detail: "暂时安全"
-        };
-      }
-
-      document.getElementById("explanation").innerHTML = `
-        <h4>${explanation.title}</h4>
-        <p>${explanation.detail}</p>
-      `;
-
-      // 绘制坐标图
-      const ctx = document.getElementById('resultChart').getContext('2d');
-      if (chart) chart.destroy(); // 避免重复绘制
-
-      // 加载背景图片（可替换为你GitHub上的图片URL）
-      const bgImage = new Image();
-      bgImage.src = "Transdomviotest/chart.png"; 
-
-      bgImage.onload = function() {
-        const plugin = {
-          id: 'custom_canvas_background_image',
-          beforeDraw: (chart) => {
-            if (bgImage) {
-              const ctx = chart.ctx;
-              const {top, left, width, height} = chart.chartArea;
-              ctx.drawImage(bgImage, left, top, width, height);
-            }
-          }
-        };
-
-        chart = new Chart(ctx, {
-          type: 'scatter',
-          data: {
-            datasets: [{
-              label: '你的结果',
-              data: [{x: percentX, y: percentY}],
-              pointBackgroundColor: 'red',
-              pointRadius: 8
-            }]
-          },
-          options: {
-            scales: {
-              x: { title: { display: true, text: 'X维度' }, min: 0, max: 100 },
-              y: { title: { display: true, text: 'Y维度' }, min: 0, max: 100 }
-            }
-          },
-          plugins: [plugin]
-        });
-      };
-    }
-  </script>
-
-</body>
-</html>
+    // 插件：绘制背景图
+    const backgroundPlugin = {
+      id: 'custom_canvas_background_image',
+      beforeDraw: (chart) => {
+        if (bgImage.complete) {
+          const ctx = chart.ctx;
+          const {top, left, width, height} = chart.chartArea;
+          ctx.save();
+          ctx.gl
